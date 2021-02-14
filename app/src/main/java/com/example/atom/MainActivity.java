@@ -19,7 +19,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -36,7 +35,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         findViewById(R.id.sign_in_button).setOnClickListener(this);
         findViewById(R.id.guest_button).setOnClickListener(this);
+
         mAuth = FirebaseAuth.getInstance();
+        //Check if user already logged in
         mAuthListener = firebaseAuth -> {
             if(firebaseAuth.getCurrentUser() != null){
                     startActivity(new Intent(MainActivity.this, ProfileActivity.class));
@@ -70,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
                 firebaseAuthWithGoogle(account.getIdToken());
             } catch (ApiException e) {
-                // Google Sign In failed, update UI appropriately
+                // Google Sign In failed
                 Log.w(TAG, "Google sign in failed", e);
             }
         }
@@ -81,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
-                        // Sign in success, update UI with the signed-in user's information
+                        // Sign in success
                         Log.d(TAG, "signInWithCredential:success");
                         if(task.getResult().getAdditionalUserInfo().isNewUser()) {
                             startActivity(new Intent(MainActivity.this, register.class));
@@ -110,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
-                                // Sign in success, update UI with the signed-in user's information
+                                // Sign in success
                                 Log.d(TAG, "signInAnonymously:success");
                                 startActivity(new Intent(MainActivity.this, register.class));
                             } else {
